@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>History</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<h2>Your History</h2>
+
+<a href="/dashboard">Back</a>
+
+<table>
+<tr>
+<th>Text</th>
+<th>Sentiment</th>
+</tr>
+
+{% for item in data %}
+<tr>
+<td>{{ item.text }}</td>
+<td>{{ item.sentiment }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+</body>
+</html>

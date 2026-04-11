@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<h2>🎤 Upload Audio</h2>
+
+<a href="/history">History</a> |
+<a href="/logout">Logout</a>
+
+<form action="/analyze" method="post" enctype="multipart/form-data" id="uploadForm">
+<input type="file" name="audio" required>
+<button type="submit">Analyze</button>
+</form>
+
+<div id="loading" class="loading">
+<p>Processing...</p>
+</div>
+
+{% if transcription %}
+
+<div class="result-card">
+
+<h3>Text</h3>
+<p>{{ transcription }}</p>
+
+<h3>Sentiment</h3>
+
+<p class="sentiment 
+{% if sentiment[0]['label'] == 'POSITIVE' %}
+positive
+{% else %}
+negative
+{% endif %}
+">
+
+{{ sentiment[0]['label'] }}  
+({{ (sentiment[0]['score']*100)|round(2) }}%)
+
+</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
