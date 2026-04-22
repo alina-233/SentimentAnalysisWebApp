@@ -2,6 +2,8 @@
 <html>
 <head>
 <title>Dashboard</title>
+<!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"> -->
+ <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -16,6 +18,15 @@
 <form action="/analyze" method="post" enctype="multipart/form-data" id="uploadForm">
 <input type="file" name="audio" required>
 <button type="submit">Analyze</button>
+</form>
+
+<h3>Or Record Live</h3>
+
+<button type="button" id="recordBtn">🎤 Start Recording</button>
+<button type="button" id="stopBtn" disabled>⏹ Stop</button>
+
+<form id="recordForm" method="post" action="/analyze" enctype="multipart/form-data">
+<input type="hidden" name="audio" id="audioData">
 </form>
 
 <div id="loading" class="loading">

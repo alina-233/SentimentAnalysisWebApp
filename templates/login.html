@@ -2,7 +2,8 @@
 <html>
 <head>
 <title>Auth</title>
-
+<!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"> -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 <style>
@@ -13,22 +14,34 @@
 </head>
 <body>
 
+<h1 class="main-heading">Sentiment Analysis Webapp</h1>
 <div class="container">
-
 <h2 id="title">Login</h2>
 
 <!-- LOGIN FORM -->
 <form action="/login" method="post" id="loginForm" class="form-box active">
-<input type="text" name="username" placeholder="Username" required>
-<input type="password" name="password" placeholder="Password" required>
+<input type="text" name="username" placeholder="Username" pattern="^\S+$" title="No spaces allowed" required>
+<!-- <input type="text" name="username" placeholder="Username" required> -->
+<div class="pw-wrap">
+  <input type="password" id="loginPassword" name="password" placeholder="Password" required>
+  <span class="eye" onclick="togglePassword('loginPassword')">👁</span>
+</div>
 <button type="submit">Login</button>
 <p>Don't have an account? <a href="#" onclick="showSignup()">Signup</a></p>
 </form>
 
 <!-- SIGNUP FORM -->
 <form action="/signup" method="post" id="signupForm" class="form-box">
-<input type="text" name="username" placeholder="Username" required>
-<input type="password" name="password" placeholder="Password" required>
+<!-- <input type="text" name="username" placeholder="Username" required> -->
+<input type="text" name="username" placeholder="Username" pattern="^\S+$" title="No spaces allowed" required>
+<!-- <input type="password" name="password" placeholder="Password" required> -->
+<div class="pw-wrap">
+    <input type="password" id="signupPassword" name="password"
+pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$"
+title="Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char"
+required>
+  <span class="eye" onclick="togglePassword('signupPassword')">👁</span>
+</div>
 <button type="submit">Signup</button>
 <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
 </form>
@@ -46,6 +59,18 @@ function showLogin(){
     document.getElementById("signupForm").classList.remove("active");
     document.getElementById("loginForm").classList.add("active");
     document.getElementById("title").innerText = "Login";
+}
+function togglePassword(id){
+  const input = document.getElementById(id);
+  const eye = input.nextElementSibling;
+
+  if(input.type === "password"){
+    input.type = "text";
+    eye.innerText = "🙈";   // change icon
+  } else {
+    input.type = "password";
+    eye.innerText = "👁";
+  }
 }
 </script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>

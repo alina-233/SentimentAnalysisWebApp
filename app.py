@@ -25,12 +25,35 @@ def home():
     return render_template("login.html")
 
 
+# @app.route("/signup", methods=["GET", "POST"])
+# def signup():
+#     if request.method == "POST":
+#         username = request.form["username"]
+#         password = request.form["password"]
+
+#         if register_user(username, password):
+#             return redirect("/")
+#         else:
+#             return "User already exists"
+
+#     return render_template("signup.html")
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
 
+        # 🚫 NO SPACES CHECK
+        if " " in username:
+            return "Username should not contain spaces"
+
+        # 🔐 PASSWORD STRENGTH CHECK
+        import re
+        if not re.match(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$', password):
+            return "Weak password"
+
+        # EXISTING LOGIC
         if register_user(username, password):
             return redirect("/")
         else:
