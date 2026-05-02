@@ -2,74 +2,147 @@
 <html>
 <head>
 <title>Auth</title>
-<!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"> -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 <style>
-.form-box{display:none;}
-.active{display:block;}
-</style>
+  .form-box { display: none; }
+  .form-box.active { display: block; }
 
+  .tab-row {
+    display: flex;
+    border-bottom: 1px solid #f0e0d6;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 16px;
+    text-align: center;
+    font-size: .88rem;
+    font-weight: 500;
+    color: #b09080;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color .22s, border-color .22s;
+    user-select: none;
+  }
+
+  .tab.active {
+    color: #6d4c41;
+    border-bottom: 2px solid #a47551;
+  }
+
+  .form-area {
+    padding: 28px 32px 24px;
+  }
+
+  .field { margin-bottom: 4px; }
+
+  .field label {
+    display: block;
+    font-size: .7rem;
+    font-weight: 600;
+    color: #a47551;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .spacer { height: 14px; }
+
+  .hint {
+    font-size: .78rem;
+    color: #b09080;
+    text-align: center;
+    margin-top: 14px;
+  }
+</style>
 </head>
 <body>
 
 <h1 class="main-heading">Sentiment Analysis Webapp</h1>
-<div class="container">
-<h2 id="title">Login</h2>
 
-<!-- LOGIN FORM -->
-<form action="/login" method="post" id="loginForm" class="form-box active">
-<input type="text" name="username" placeholder="Username" pattern="^\S+$" title="No spaces allowed" required>
-<!-- <input type="text" name="username" placeholder="Username" required> -->
-<div class="pw-wrap">
-  <input type="password" id="loginPassword" name="password" placeholder="Password" required>
-  <span class="eye" onclick="togglePassword('loginPassword')">👁</span>
-</div>
-<button type="submit">Login</button>
-<p>Don't have an account? <a href="#" onclick="showSignup()">Signup</a></p>
-</form>
+<div class="container" style="padding:0; overflow:hidden;">
 
-<!-- SIGNUP FORM -->
-<form action="/signup" method="post" id="signupForm" class="form-box">
-<!-- <input type="text" name="username" placeholder="Username" required> -->
-<input type="text" name="username" placeholder="Username" pattern="^\S+$" title="No spaces allowed" required>
-<!-- <input type="password" name="password" placeholder="Password" required> -->
-<div class="pw-wrap">
-    <input type="password" id="signupPassword" name="password"
-pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$"
-title="Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char"
-required>
-  <span class="eye" onclick="togglePassword('signupPassword')">👁</span>
-</div>
-<button type="submit">Signup</button>
-<p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
-</form>
+  <div class="tab-row">
+    <div class="tab active" id="tab-login" onclick="showLogin()">Login</div>
+    <div class="tab" id="tab-signup" onclick="showSignup()">Sign Up</div>
+  </div>
 
+  <div class="form-area">
+
+    <!-- LOGIN FORM -->
+    <form action="/login" method="post" id="loginForm" class="form-box active">
+      <div class="field">
+        <label for="loginUser">Username</label>
+        <input type="text" id="loginUser" name="username"
+               placeholder="Enter your username"
+               pattern="^\S+$" title="No spaces allowed" required>
+      </div>
+      <div class="spacer"></div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="loginPassword" name="password"
+                 placeholder="Enter your password" required>
+          <span class="eye" onclick="togglePassword('loginPassword')">👁</span>
+        </div>
+      </div>
+      <button type="submit">Login</button>
+      <p class="hint">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+    </form>
+
+    <!-- SIGNUP FORM -->
+    <form action="/signup" method="post" id="signupForm" class="form-box">
+      <div class="field">
+        <label for="signupUser">Username</label>
+        <input type="text" id="signupUser" name="username"
+               placeholder="Choose a username"
+               pattern="^\S+$" title="No spaces allowed" required>
+      </div>
+      <div class="spacer"></div>
+      <div class="field">
+        <label for="signupPassword">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="signupPassword" name="password"
+                 placeholder="Min 8 chars, 1 uppercase, 1 special"
+                 pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$"
+                 title="Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char"
+                 required>
+          <span class="eye" onclick="togglePassword('signupPassword')">👁</span>
+        </div>
+      </div>
+      <button type="submit">Create Account</button>
+      <p class="hint">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+    </form>
+
+  </div>
 </div>
 
 <script>
-function showSignup(){
-    document.getElementById("loginForm").classList.remove("active");
-    document.getElementById("signupForm").classList.add("active");
-    document.getElementById("title").innerText = "Signup";
+function showLogin() {
+  document.getElementById('loginForm').classList.add('active');
+  document.getElementById('signupForm').classList.remove('active');
+  document.getElementById('tab-login').classList.add('active');
+  document.getElementById('tab-signup').classList.remove('active');
 }
 
-function showLogin(){
-    document.getElementById("signupForm").classList.remove("active");
-    document.getElementById("loginForm").classList.add("active");
-    document.getElementById("title").innerText = "Login";
+function showSignup() {
+  document.getElementById('signupForm').classList.add('active');
+  document.getElementById('loginForm').classList.remove('active');
+  document.getElementById('tab-signup').classList.add('active');
+  document.getElementById('tab-login').classList.remove('active');
 }
-function togglePassword(id){
+
+function togglePassword(id) {
   const input = document.getElementById(id);
   const eye = input.nextElementSibling;
-
-  if(input.type === "password"){
-    input.type = "text";
-    eye.innerText = "🙈";   // change icon
+  if (input.type === 'password') {
+    input.type = 'text';
+    eye.innerText = '🙈';
   } else {
-    input.type = "password";
-    eye.innerText = "👁";
+    input.type = 'password';
+    eye.innerText = '👁';
   }
 }
 </script>

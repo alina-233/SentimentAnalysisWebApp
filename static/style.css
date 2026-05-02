@@ -17,6 +17,17 @@ body{
   text-align:center;
   box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
+.container-wide {
+  text-align:center;
+  background:#ffffff;
+  padding:0;
+  border-radius:20px;
+  width:90%;
+  max-width:900px;
+  margin:auto;
+  box-shadow:0 12px 35px rgba(139,94,60,0.15);
+  color:#4b3832;
+}
 
 /* headings */
 h2{
@@ -41,7 +52,7 @@ input{
   width:100%;
   padding:14px 45px 14px 14px;
   margin:12px 0;
-  border:1px solid #e5d6c8;   /* softer */
+  border:1px solid #e5d6c8; 
   border-radius:12px;
   background:#fff;
   transition:0.2s;
@@ -116,15 +127,13 @@ font-weight:500;
   font-size:13px;
   color:#8d6e63;
 }
-
-/* added later */
-
 .main-heading{
-  font-size:28px;
-  font-weight:600;
-  margin-bottom:18px;
-  color:#4b3832;
-  letter-spacing:0.5px;
+   font-size: 22px;
+  font-weight: 300;
+  color: #6d4c41;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
 }
 button{
   letter-spacing:0.5px;

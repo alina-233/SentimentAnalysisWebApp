@@ -2,64 +2,191 @@
 <html>
 <head>
 <title>Dashboard</title>
-<!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"> -->
- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid #f0e0d6;
+  }
+
+  .topbar-title {
+    font-size: .7rem;
+    font-weight: 600;
+    color: #a47551;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .topbar-links {
+    display: flex;
+    gap: 6px;
+  }
+
+  .topbar-links a {
+    font-size: .75rem;
+    font-weight: 500;
+    color: #8d6e63;
+    text-decoration: none;
+    padding: 5px 12px;
+    border: 1px solid #e5d6c8;
+    border-radius: 20px;
+    transition: all .2s;
+  }
+
+  .topbar-links a:hover {
+    background: #fdf5ef;
+    border-color: #bc8f6f;
+    color: #6d4c41;
+  }
+
+  .body {
+    padding: 28px 28px 24px;
+  }
+
+  .section-label {
+    font-size: .7rem;
+    font-weight: 600;
+    color: #a47551;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .file-drop {
+    border: 1.5px dashed #e5d6c8;
+    border-radius: 12px;
+    padding: 22px;
+    text-align: center;
+    background: #fdf9f6;
+    cursor: pointer;
+    transition: .2s;
+    position: relative;
+  }
+
+  .file-drop:hover {
+    border-color: #bc8f6f;
+    background: #fdf5ef;
+  }
+
+  .file-drop input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    border: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  .file-drop-icon {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .file-drop p {
+    font-size: .82rem;
+    color: #b09080;
+    margin: 0;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  .divider span {
+    font-size: .72rem;
+    color: #c9b0a0;
+    white-space: nowrap;
+  }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #f0e0d6;
+  }
+
+  .rec-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .rec-row button {
+    margin-top: 0;
+    flex: 1;
+  }
+</style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" style="padding:0; overflow:hidden; max-width:460px;">
 
-<h2>🎤 Upload Audio</h2>
+  <!-- Top bar -->
+  <div class="topbar">
+    <span class="topbar-title">Sentiment Analysis</span>
+    <div class="topbar-links">
+      <a href="/history">History</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
 
-<a href="/history">History</a> |
-<a href="/logout">Logout</a>
+  <div class="body">
 
-<form action="/analyze" method="post" enctype="multipart/form-data" id="uploadForm">
-<input type="file" name="audio" required>
-<button type="submit">Analyze</button>
-</form>
+    <!-- Upload -->
+    <p class="section-label">Upload Audio</p>
+    <form action="/analyze" method="post" enctype="multipart/form-data" id="uploadForm">
+      <div class="file-drop">
+        <span class="file-drop-icon">🎵</span>
+        <p>Click to choose a file or drag it here</p>
+        <input type="file" name="audio" required>
+      </div>
+      <button type="submit">Analyze</button>
+    </form>
 
-<h3>Or Record Live</h3>
+    <div class="divider"><span>or record live</span></div>
 
-<button type="button" id="recordBtn">🎤 Start Recording</button>
-<button type="button" id="stopBtn" disabled>⏹ Stop</button>
+    <!-- Record -->
+    <div class="rec-row">
+      <button type="button" id="recordBtn">🎤 Start Recording</button>
+      <button type="button" id="stopBtn" disabled style="background:#b23a3a;">⏹ Stop</button>
+    </div>
 
-<form id="recordForm" method="post" action="/analyze" enctype="multipart/form-data">
-<input type="hidden" name="audio" id="audioData">
-</form>
+    <form id="recordForm" method="post" action="/analyze" enctype="multipart/form-data">
+      <input type="hidden" name="audio" id="audioData">
+    </form>
 
-<div id="loading" class="loading">
-<p>Processing...</p>
-</div>
+    <div id="loading" class="loading">
+      <p>Processing...</p>
+    </div>
 
-{% if transcription %}
+    <!-- Result -->
+    {% if transcription %}
+    <div class="result-card" style="margin-top:22px;">
 
-<div class="result-card">
+      <h3>Transcription</h3>
+      <p>{{ transcription }}</p>
 
-<h3>Text</h3>
-<p>{{ transcription }}</p>
+      <h3>Sentiment</h3>
+      <p class="sentiment {% if sentiment[0]['label'] == 'POSITIVE' %}positive{% else %}negative{% endif %}">
+        {{ sentiment[0]['label'] }} ({{ (sentiment[0]['score'] * 100) | round(2) }}%)
+      </p>
 
-<h3>Sentiment</h3>
+    </div>
+    {% endif %}
 
-<p class="sentiment 
-{% if sentiment[0]['label'] == 'POSITIVE' %}
-positive
-{% else %}
-negative
-{% endif %}
-">
-
-{{ sentiment[0]['label'] }}  
-({{ (sentiment[0]['score']*100)|round(2) }}%)
-
-</p>
-
-</div>
-
-{% endif %}
-
-</div>
+  </div><!-- /body -->
+</div><!-- /container -->
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

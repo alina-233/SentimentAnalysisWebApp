@@ -16,7 +16,7 @@ UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
-# ---------- AUTH ROUTES ----------
+# AUTH ROUTES
 
 @app.route("/")
 def home():
@@ -24,31 +24,17 @@ def home():
         return redirect("/dashboard")
     return render_template("login.html")
 
-
-# @app.route("/signup", methods=["GET", "POST"])
-# def signup():
-#     if request.method == "POST":
-#         username = request.form["username"]
-#         password = request.form["password"]
-
-#         if register_user(username, password):
-#             return redirect("/")
-#         else:
-#             return "User already exists"
-
-#     return render_template("signup.html")
-
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
 
-        # 🚫 NO SPACES CHECK
+        # NO SPACES CHECK
         if " " in username:
             return "Username should not contain spaces"
 
-        # 🔐 PASSWORD STRENGTH CHECK
+        # PASSWORD STRENGTH CHECK
         import re
         if not re.match(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$', password):
             return "Weak password"
@@ -84,7 +70,7 @@ def logout():
     return redirect("/")
 
 
-# ---------- MAIN APP ----------
+# MAIN APP
 
 @app.route("/dashboard")
 def dashboard():
@@ -129,7 +115,7 @@ def history():
     if "user" not in session:
         return redirect("/")
 
-    data = history_collection.find({"username": session["user"]})
+    data = list(history_collection.find({"username": session["user"]}))
     return render_template("history.html", data=data)
 
 
