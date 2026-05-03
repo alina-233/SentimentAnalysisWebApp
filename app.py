@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, session
 import whisper
 from transformers import pipeline
@@ -5,8 +6,13 @@ import os
 from auth import register_user, login_user
 from db import history_collection
 
+load_dotenv()
 app = Flask(__name__)
-app.secret_key = "secret123"
+app.secret_key = os.environ.get("SECRET_KEY", "dev_key")
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE="None"
+)
 
 # models
 model = whisper.load_model("base")
@@ -78,7 +84,6 @@ def dashboard():
         return redirect("/")
     return render_template("dashboard.html")
 
-
 @app.route("/analyze", methods=["POST"])
 def analyze():
     if "user" not in session:
@@ -94,19 +99,22 @@ def analyze():
     transcription = result["text"]
 
     # sentiment
-    sentiment = sentiment_model(transcription)
+    result = sentiment_model(transcription)[0]
+    label = result["label"]
+    score = round(result["score"] * 100, 2)
 
     # save to DB
     history_collection.insert_one({
         "username": session["user"],
         "text": transcription,
-        "sentiment": sentiment[0]["label"]
+        "sentiment": label
     })
 
     return render_template(
         "dashboard.html",
         transcription=transcription,
-        sentiment=sentiment
+        sentiment=label,
+        score=score
     )
 
 
@@ -120,4 +128,5 @@ def history():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(host="0.0.0.0", port=7860)
