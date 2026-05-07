@@ -56,6 +56,17 @@
     text-align: center;
     margin-top: 14px;
   }
+  .error-text {
+    font-size: .78rem;
+    font-weight: 500;
+    color: #c62828;
+    background: #fdecea;
+    border: 1px solid #f5c2c2;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 12px;
+    text-align: center;
+}
 </style>
 </head>
 <body>
@@ -89,6 +100,10 @@
         </div>
       </div>
       <button type="submit">Login</button>
+      {% if error %}
+  <p class="error-text">{{ error }}</p>
+{% endif %}
+
       <p class="hint">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
     </form>
 
